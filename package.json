@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/Shehats/orm-adapter/issues"
   },
-  "homepage": "https://github.com/Shehats/orm-adapter#readme"
+  "homepage": "https://github.com/Shehats/orm-adapter#readme",
+  "dependencies": {
+    "easy-injectionjs": "^0.1.42",
+    "properties-reader": "0.0.16",
+    "reflect-metadata": "^0.1.12"
+  }
 }
