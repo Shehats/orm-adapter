@@ -1,12 +1,6 @@
 import { GenericEntity } from './generic-entity';
 import { is, Easily } from 'easy-injectionjs';
-
-export interface Connection {
-  putRepository<T extends {new(...args:any[]):{}}>(
-    target: (new(...args:any[])=>T)|Function|string, object: Object|any): void,
-  getRepository<T extends {new(...args:any[]):{}}>(
-    target: (new(...args:any[])=>T)|Function|string): GenericEntity
-}
+import { Connection, Connector } from './generic-schema';
 
 export class GenericConnection implements Connection {
   private _entities: {string: GenericEntity};
@@ -34,7 +28,7 @@ export class GenericConnection implements Connection {
   }
 }
 
-export class GenericConnector {
+export class GenericConnector implements Connector{
   private _connectionFunc: Function|any;
   private _connectionApi: Function|Object|any;
   private _orm: boolean;
@@ -81,4 +75,3 @@ export const ConnectionFunction = (func: Function|any, connectionApi?: Function|
   let connector = <Connection>is('DB_Connection') || new GenericConnector(orm,func, connectionApi, connectClass);
   Easily('DB_Connection', connector);
 }
-
