@@ -1,7 +1,8 @@
 import * as Joi from 'joi';
-import * as dynamo from 'dynamodb';
+// import * as dynamo from 'dynamodb';
 import { Easily, is } from 'easy-injectionjs';
 import 'reflect-metadata';
+import { JSDataSchemaField} from '../js-data';
 
 export interface Field {
   type: any,
@@ -12,10 +13,8 @@ export interface Field {
 export const createType = (config: string, type: string) =>
   (type === 'String' && config === 'email') ? Joi.string().email(): (type === 'String') ? Joi.string()
   : (type === 'Number')? Joi.number()
-  : (config.toLowerCase() === 'string' && type === 'Array') ? dynamo.types.stringSet() : (type === 'Array')
-  ? dynamo.types.numberSet()
   : (type === 'Boolean') ? Joi.boolean()
-  : (type === 'Date') ? Joi.date(): dynamo.types.uuid()
+  : (type === 'Date') ? Joi.date(): null
 
 export const createField = (target: Object,
   key: string,params?: string | any | any[]) => {
@@ -39,5 +38,5 @@ export const createSchema = <T extends {new(...args: any[]):{}}> (target: T) => 
     let x = stack.pop();
     schema['schema'][x.name] = x.type;
   }
-  return dynamo.define(target.name, schema);
+  // return dynamo.define(target.name, schema);
 }

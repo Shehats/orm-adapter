@@ -1,9 +1,9 @@
-import { GenericEntity } from './generic-entity';
+import { GenericEntity, CommonEntity } from './generic-entity';
 import { is, Easily } from 'easy-injectionjs';
 import { Connection, Connector } from './generic-schema';
 
 export class GenericConnection implements Connection {
-  private _entities: {string: GenericEntity};
+  private _entities: {string: CommonEntity};
   private _connectionApi: Function|Object|any;
 
   constructor (connectionApi: Function|Object|any) {

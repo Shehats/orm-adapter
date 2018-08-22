@@ -25,3 +25,7 @@ export interface Connector {
   ConnectionApi();
   ConnectionApi(connectionApi: Function|Object|any);
 }
+
+export enum OrmType {
+  JS_DATA
+}
