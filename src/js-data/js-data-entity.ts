@@ -1,6 +1,6 @@
 import { CommonEntity } from '../generics';
 import { JSDataSchema, JSDataSchemaField } from './js-data-schema';
-import { is } from 'easy-injectionjs';
+import { is, Easily } from 'easy-injectionjs';
 
 export const createJSDataField = (type: string, indexed?: boolean): JSDataSchemaField => {
   return <JSDataSchemaField>((type === 'String')
@@ -10,12 +10,16 @@ export const createJSDataField = (type: string, indexed?: boolean): JSDataSchema
     ? { type: 'date', indexed } : { type: 'string', indexed })
 }
 
-export const createJSDataSchemaProperties = (fields: any[]): any => {
-  const properties = {};
+export const createJSDataSchemaProperties = (id: number|string, fields: any[]): any => {
+  const properties = {id: id};
   fields.forEach(x => {
     properties[x.name] = x.field
   });
   return properties;
+}
+
+export const setJSDataId = (target: string)=> {
+  Easily(target+'_ID', createJSDataField(is(target+'_ID')));
 }
 
 export const getJSDataId = (target: (new(...args: any[]) => {})): number|string => {

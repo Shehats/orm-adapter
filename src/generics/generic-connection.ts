@@ -3,8 +3,8 @@ import { is, Easily } from 'easy-injectionjs';
 import { Connection, Connector } from './generic-schema';
 
 export class GenericConnection implements Connection {
-  private _entities: {string: CommonEntity};
-  private _connectionApi: Function|Object|any;
+  protected _entities: {string: CommonEntity};
+  protected _connectionApi: Function|Object|any;
 
   constructor (connectionApi: Function|Object|any) {
     this._connectionApi = connectionApi;
@@ -19,7 +19,7 @@ export class GenericConnection implements Connection {
   }
 
   public getRepository<T extends {new(...args:any[]):{}}>(
-    target: (new(...args:any[])=>T)|Function|string): GenericEntity {
+    target: (new(...args:any[])=>T)|Function|string): CommonEntity {
     return (target instanceof Function)
     ? this._entities[(<Function>target).name]
     : (typeof target === 'string')

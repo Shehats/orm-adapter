@@ -1,4 +1,4 @@
-import { GenericEntity } from './generic-entity';
+import { CommonEntity } from './generic-entity';
 
 export interface GenericSchema {
   name: string,
@@ -15,11 +15,11 @@ export interface Connection {
   putRepository<T extends {new(...args:any[]):{}}>(
     target: (new(...args:any[])=>T)|Function|string, object: Object|any): void,
   getRepository<T extends {new(...args:any[]):{}}>(
-    target: (new(...args:any[])=>T)|Function|string): GenericEntity
+    target: (new(...args:any[])=>T)|Function|string): CommonEntity
 }
 
 export interface Connector {
-  connect(url: string, params: any, ...rest: any[]): Promise<Connection|any>;
+  connect(url?: string, params?: any, ...rest: any[]): Promise<Connection|any>;
   ConnectionFunc();
   ConnectionFunc(connectionFunction: Function|any);
   ConnectionApi();
