@@ -1,55 +1,34 @@
-import { createSchema } from './helpers';
+import { createFields } from './helpers';
 import { is, Easily } from 'easy-injectionjs';
-import { Controller, BasicController } from '../controllers/controller';
+import { OrmType, Connector } from "../generics";
+import { OrmConfig } from './config';
+import { getConnector, createSchemas } from "./helpers";
 
-export interface Routes {
-  getUrl?: string,
-  getByIdUrl?: string,
-  getByKeyUrl?: string,
-  postUrl?: string,
-  putUrl?: string,
-  deleteUrl?: string,
-  queryUrl?: string,
-  registerUrl?: string,
-  loginUrl?: string,
-  logoutUrl?: string
+export const registerOrmProperties = (ormType: OrmType, ormConfig: OrmConfig) => {
+  Easily('ORM_TYPE', ormType);
+  Easily('ORM_CONFIG', ormConfig);
 }
 
-export interface ControllerConfig <U, T extends Controller<U>> {
-  routes: Routes,
-  controller: (new(...args: any[]) => T),
-  target: (new(...args: any[]) => {}),
-  entity: any
+/*
+TODO
+read properties from properties file.
+*/
+export const readProperties = () => {}
+
+export const ormRunner = (ormType: OrmType, ormConfig: OrmConfig,
+                          url?: string, params?: any, ...rest: any[]) => {
+  let _connector: Connector = getConnector(ormType, ormConfig);
+  createSchemas(ormType,_connector.connect(url, params, rest));
 }
 
-export const Entity = <T extends {new(...args: any[]):{}}> () => function(target: T) {
-  const entity = <any>createSchema(target);
-  entity.config({tableName: target.name});
-  Easily(target.name+'_Entity', entity);
-}
-
-export const EntityController = <T extends {new(...args: any[]):{}}> (routes?: Routes) => function(target: T) {
-  const entity = <any>createSchema(target);
-  entity.config({tableName: target.name});
-  Easily(target.name+'_Entity', entity);
-  const targetRoutes: Routes = (routes) 
-                    ? routes
-                    : {
-                      getUrl: target.name.toLowerCase(),
-                      getByIdUrl: target.name.toLowerCase(),
-                      getByKeyUrl: target.name.toLowerCase(),
-                      postUrl: target.name.toLowerCase(),
-                      putUrl: target.name.toLowerCase(),
-                      deleteUrl: target.name.toLowerCase(),
-                      queryUrl: target.name.toLowerCase()
-                    }
-  let controllersStack = <any[]>is('Controller_Queue') || [];
-  let curn: ControllerConfig<T, BasicController<T>> = {
-    routes: targetRoutes,
-    controller: BasicController,
-    target: target,
-    entity: entity
+export const Entity = <T extends {new(...args: any[]):{}}> (ormType?: OrmType,
+  ormConfig?: OrmConfig) => function(target: T) {
+  let _ormType: OrmType = ormType||<OrmType>is('ORM_TYPE');
+  let _ormConfig: OrmConfig = ormConfig || <OrmConfig>is('ORM_CONFIG');
+  Easily(target.name+'_Fields', createFields(_ormType, is(target.name+'_Fields')));
+  if (_ormConfig['url']||_ormConfig['params']||_ormConfig['rest']) {
+    ormRunner(_ormType, _ormConfig, _ormConfig['url']||_ormConfig['params']||_ormConfig['rest']);
+  } else {
+    ormRunner(_ormType,ormConfig);
   }
-  controllersStack.push(curn);
-  Easily('Controller_Stack', controllersStack);
 }

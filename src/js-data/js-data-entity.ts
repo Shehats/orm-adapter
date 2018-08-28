@@ -1,6 +1,7 @@
 import { CommonEntity } from '../generics';
 import { JSDataSchema, JSDataSchemaField } from './js-data-schema';
 import { is, Easily } from 'easy-injectionjs';
+import { Field } from '../models/helpers';
 
 export const createJSDataField = (type: string, indexed?: boolean): JSDataSchemaField => {
   return <JSDataSchemaField>((type === 'String')
@@ -10,10 +11,10 @@ export const createJSDataField = (type: string, indexed?: boolean): JSDataSchema
     ? { type: 'date', indexed } : { type: 'string', indexed })
 }
 
-export const createJSDataSchemaProperties = (id: number|string, fields: any[]): any => {
+export const createJSDataSchemaProperties = (id: number|string, fields: Field[]): any => {
   const properties = {id: id};
   fields.forEach(x => {
-    properties[x.name] = x.field
+    properties[x.name] = x.type
   });
   return properties;
 }

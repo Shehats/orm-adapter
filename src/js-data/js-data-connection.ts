@@ -3,6 +3,7 @@ import { AdapterSchema } from './js-data-schema';
 import { is } from 'easy-injectionjs';
 import { setJSDataId, createJSDataSchemaProperties, JsDataEntity } from './js-data-entity';
 import { CommonEntity } from '../generics/generic-entity';
+import { Field } from '../models/helpers';
 
 export class JSDataConnection implements Connection {
   private _schema: any;
@@ -24,7 +25,7 @@ export class JSDataConnection implements Connection {
     target: (new(...args:any[])=>T), object?: Object|any): void {
       setJSDataId(name);
       let id = <number|string>is(target.name+'_ID');
-      let fields = <any[]>is(target.name+'_Fields');
+      let fields = <Field[]>is(target.name+'_Fields');
       let properties = createJSDataSchemaProperties(id, fields);
       const schema = new this._schema({
         type: 'object',

@@ -13,7 +13,7 @@ export interface SchemaField {
 
 export interface Connection {
   putRepository<T extends {new(...args:any[]):{}}>(
-    target: (new(...args:any[])=>T)|Function|string, object: Object|any): void,
+    target: (new(...args:any[])=>T)|Function|string, object?: Object|any): void,
   getRepository<T extends {new(...args:any[]):{}}>(
     target: (new(...args:any[])=>T)|Function|string): CommonEntity
 }

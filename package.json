@@ -20,6 +20,7 @@
     "easy-injectionjs": "^0.1.42",
     "joi": "^13.6.0",
     "properties-reader": "0.0.16",
-    "reflect-metadata": "^0.1.12"
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.2.2"
   }
 }

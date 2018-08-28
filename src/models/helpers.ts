@@ -1,14 +1,21 @@
 import * as Joi from 'joi';
-// import * as dynamo from 'dynamodb';
 import { Easily, is } from 'easy-injectionjs';
 import 'reflect-metadata';
-import { JSDataSchemaField} from '../js-data';
+import { OrmType, Connection, Connector, GenericConnector } from '../generics';
+import { createJSDataField } from '../js-data/js-data-entity';
+import { from } from 'rxjs';
+import { OrmConfig, JsDataConfig, GenericConfig } from './config';
+import { JSDataConnector } from '../js-data';
 
 export interface Field {
-  type: any,
   name: string,
+  type: any,
   params?: string | any | any[]
 }
+
+export const getGlobalOrm = () => <OrmType>is('Global_Orm');
+
+export const getGlobalConnector = () => <Promise<Connection>>(<Connector>is('Global_Connector')).connect(is('DB_URL'), is('DB_PARAMS'))
 
 export const createType = (config: string, type: string) =>
   (type === 'String' && config === 'email') ? Joi.string().email(): (type === 'String') ? Joi.string()
@@ -16,10 +23,10 @@ export const createType = (config: string, type: string) =>
   : (type === 'Boolean') ? Joi.boolean()
   : (type === 'Date') ? Joi.date(): null
 
-export const createField = (target: Object,
+export const registerField = (target: Object,
   key: string,params?: string | any | any[]) => {
   let field: Field = {
-    type: createType(<string>params,Reflect.getMetadata("design:type", target, key).name),
+    type: Reflect.getMetadata("design:type", target, key).name,
     name: key,
     params: params
   }
@@ -28,15 +35,33 @@ export const createField = (target: Object,
   Easily(target.constructor.name+'_Fields', stack);
 }
 
-export const createSchema = <T extends {new(...args: any[]):{}}> (target: T) => {
-  let hashKey = <string> is('hashkey_'+target.name);
-  let rangeKey = <any> is('hashkey_'+target.name);
-  let stack = <Field[]>is(target.name+'_Fields');
-  let schema = { hashKey: hashKey, schema: {} };
-  schema['rangeKey'] = rangeKey;
-  while (stack && stack.length > 0) {
-    let x = stack.pop();
-    schema['schema'][x.name] = x.type;
-  }
-  // return dynamo.define(target.name, schema);
+export const createFields = (ormType: OrmType, fields: Field[]) => {
+  return fields.map(field => (ormType === OrmType.JS_DATA)
+                            ? {...field, type: createJSDataField(field.type)}
+                            : field);
+}
+
+export const getConnector = (ormType: OrmType, ormConfig: OrmConfig) => {
+ return (ormType === OrmType.JS_DATA)
+ ? new JSDataConnector((<JsDataConfig>ormConfig).Schema,
+    (<JsDataConfig>ormConfig).Adapter,
+    (<JsDataConfig>ormConfig).adapterConfig,
+    (<JsDataConfig>ormConfig).adapterName,
+    (<JsDataConfig>ormConfig).Container)
+ : new GenericConnector((<GenericConfig>ormConfig).orm,
+    (<GenericConfig>ormConfig).connectionFunction,
+    (<GenericConfig>ormConfig).connectionApi,
+    (<GenericConfig>ormConfig).connectClass);
+}
+
+export const createSchemas = <T extends {new(...args: any[]):{}}> (ormType: OrmType,
+  connector: Promise<Connection> = getGlobalConnector()) => {
+  let entities: T[] = <T[]>is(`${ormType.toString()}_Entities`)
+  from(connector)
+  .subscribe(
+    (conn: Connection) => {
+      entities.forEach(x => conn.putRepository(x))
+    },
+    err => console.error(err)
+  )
 }
