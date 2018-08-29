@@ -8,7 +8,7 @@ import { Field } from '../models/helpers';
 export class JSDataConnection implements Connection {
   private _schema: any;
   private _store: any;
-  private _entities: {string: JsDataEntity};
+  private _entities: any = {};
   private static instance: JSDataConnection = null;
 
   private constructor(store: Function|Object|any,
@@ -20,10 +20,10 @@ export class JSDataConnection implements Connection {
   public static create(store: Function|Object|any, schema: Function|Object|any) {
     return this.instance || (this.instance = new JSDataConnection(store, schema));
   }
-
+ 
   public putRepository<T extends {new(...args:any[]):{}}>(
     target: (new(...args:any[])=>T), object?: Object|any): void {
-      setJSDataId(name);
+      setJSDataId(target.name);
       let id = <number|string>is(target.name+'_ID');
       let fields = <Field[]>is(target.name+'_Fields');
       let properties = createJSDataSchemaProperties(id, fields);

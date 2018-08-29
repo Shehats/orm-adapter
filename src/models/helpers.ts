@@ -15,6 +15,7 @@ export interface Field {
 
 export const getGlobalOrm = () => <OrmType>is('Global_Orm');
 
+
 export const getGlobalConnector = () => <Promise<Connection>>(<Connector>is('Global_Connector')).connect(is('DB_URL'), is('DB_PARAMS'))
 
 export const createType = (config: string, type: string) =>
@@ -23,14 +24,14 @@ export const createType = (config: string, type: string) =>
   : (type === 'Boolean') ? Joi.boolean()
   : (type === 'Date') ? Joi.date(): null
 
-export const registerField = (target: Object,
+export const registerField = (target: Function,
   key: string,params?: string | any | any[]) => {
   let field: Field = {
     type: Reflect.getMetadata("design:type", target, key).name,
     name: key,
     params: params
   }
-  let stack = <Field[]>is(target.constructor.name+'_Fields') || [];
+  let stack = <Field[]>is(target.name+'_Fields') || [];
   stack.push(field)
   Easily(target.constructor.name+'_Fields', stack);
 }
@@ -54,13 +55,13 @@ export const getConnector = (ormType: OrmType, ormConfig: OrmConfig) => {
     (<GenericConfig>ormConfig).connectClass);
 }
 
-export const createSchemas = <T extends {new(...args: any[]):{}}> (ormType: OrmType,
-  connector: Promise<Connection> = getGlobalConnector()) => {
-  let entities: T[] = <T[]>is(`${ormType.toString()}_Entities`)
+export const createSchema = <T extends {new(...args: any[]):{}}> (ormType: OrmType,
+                            connector: Promise<Connection> = getGlobalConnector(),
+                            entity: T) => {
   from(connector)
   .subscribe(
     (conn: Connection) => {
-      entities.forEach(x => conn.putRepository(x))
+      conn.putRepository(entity)
     },
     err => console.error(err)
   )
