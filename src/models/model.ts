@@ -7,6 +7,7 @@ import { getConnector, createSchema } from "./helpers";
 export const registerOrmProperties = (ormType: OrmType, ormConfig: OrmConfig) => {
   Easily('ORM_TYPE', ormType);
   Easily('ORM_CONFIG', ormConfig);
+  Easily('Global_Connector', getConnector(ormType, ormConfig))
 }
 
 /*
@@ -17,8 +18,8 @@ export const readProperties = () => {}
 
 export const ormRunner = (ormType: OrmType, ormConfig: OrmConfig, target: any,
                           url?: string, params?: any, ...rest: any[]) => {
-  let _connector: Connector = getConnector(ormType, ormConfig);
-  createSchema(ormType,_connector.connect(url, params, rest), target);
+  let _connector: Connector = <Connector>is('Global_Connector') ||  getConnector(ormType, ormConfig);
+  createSchema(_connector.connect(url, params, rest), target);
 }
 
 export const Entity = <T extends {new(...args: any[]):{}}> (ormType?: OrmType,

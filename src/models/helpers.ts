@@ -13,8 +13,7 @@ export interface Field {
   params?: string | any | any[]
 }
 
-export const getGlobalOrm = () => <OrmType>is('Global_Orm');
-
+export const getGlobalOrm = () => <OrmType>is('ORM_TYPE')
 
 export const getGlobalConnector = () => <Promise<Connection>>(<Connector>is('Global_Connector')).connect(is('DB_URL'), is('DB_PARAMS'))
 
@@ -55,8 +54,7 @@ export const getConnector = (ormType: OrmType, ormConfig: OrmConfig) => {
     (<GenericConfig>ormConfig).connectClass);
 }
 
-export const createSchema = <T extends {new(...args: any[]):{}}> (ormType: OrmType,
-                            connector: Promise<Connection> = getGlobalConnector(),
+export const createSchema = <T extends {new(...args: any[]):{}}> (connector: Promise<Connection> = getGlobalConnector(),
                             entity: T) => {
   from(connector)
   .subscribe(
