@@ -1,4 +1,4 @@
-import { CommonEntity } from './generic-entity';
+import { Repository } from './generic-entity';
 
 export interface GenericSchema {
   name: string,
@@ -15,7 +15,7 @@ export interface Connection {
   putRepository<T extends {new(...args:any[]):{}}>(
     target: (new(...args:any[])=>T)|Function|string, object?: Object|any): void,
   getRepository<T extends {new(...args:any[]):{}}>(
-    target: (new(...args:any[])=>T)|Function|string): CommonEntity
+    target: (new(...args:any[])=>T)|Function|string): Repository
 }
 
 export interface Connector {
@@ -27,5 +27,11 @@ export interface Connector {
 }
 
 export enum OrmType {
-  JS_DATA
+  JS_DATA,
+  DYNAMODB,
+  MONGOOSE,
+  WATER_LINE,
+  BOOK_SHELF,
+  LOOP_BACK,
+  CUSTOM
 }

@@ -1,8 +1,8 @@
 import { Connection, Connector, GenericConnection } from '../generics';
 import { AdapterSchema } from './js-data-schema';
 import { is } from 'easy-injectionjs';
-import { setJSDataId, createJSDataSchemaProperties, JsDataEntity } from './js-data-entity';
-import { CommonEntity } from '../generics/generic-entity';
+import { setJSDataId, createJSDataSchemaProperties, JsDataRepository } from './js-data-entity';
+import { Repository } from '../generics/generic-entity';
 import { Field } from '../models/helpers';
 
 export class JSDataConnection implements Connection {
@@ -36,11 +36,11 @@ export class JSDataConnection implements Connection {
         table: `${target.name}s`,
         schema: schema
       })
-      this._entities[target.name] = new JsDataEntity(this._store, target);
+      this._entities[target.name] = new JsDataRepository(this._store, target);
   }
 
   public getRepository<T extends {new(...args:any[]):{}}>(
-    target: (new(...args:any[])=>T)): CommonEntity {
+    target: (new(...args:any[])=>T)): Repository {
     return this._entities[target.name]
   }
 }

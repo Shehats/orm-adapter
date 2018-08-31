@@ -1,4 +1,4 @@
-export interface CommonEntity {
+export interface Repository {
   findAll <T extends {new(...args:any[]):{}}> ():T[]|any[]|any;
   findById <T extends {new(...args:any[]):{}}> (id: number|string|any): T|any;
   findOne <T extends {new(...args:any[]):{}}> (params: Object|any): T|any;
@@ -10,7 +10,7 @@ export interface CommonEntity {
   deleteById (id: number|string|any);
 }
 
-export class GenericEntity {
+export class GenericRepository {
   private _entity: (new(...args: any[]) => {})|Object|any;
   private _connectionApi: Function|Object|any;
 

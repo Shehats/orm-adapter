@@ -1,4 +1,4 @@
-import { CommonEntity } from '../generics';
+import { Repository } from '../generics';
 import { JSDataSchema, JSDataSchemaField } from './js-data-schema';
 import { is, Easily } from 'easy-injectionjs';
 import { Field } from '../models/helpers';
@@ -27,7 +27,7 @@ export const getJSDataId = (target: (new(...args: any[]) => {})): number|string 
   return is(target.name+'_ID')
 }
 
-export class JsDataEntity implements CommonEntity {
+export class JsDataRepository implements Repository {
   private _store: any;
   private _entity: (new(...args: any[]) => {});
   constructor(store: any, entity: (new(...args: any[]) => {})) {

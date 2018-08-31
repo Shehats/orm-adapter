@@ -1,4 +1,4 @@
-import { GenericEntity, CommonEntity } from './generic-entity';
+import { GenericRepository, Repository } from './generic-entity';
 import { is, Easily } from 'easy-injectionjs';
 import { Connection, Connector } from './generic-schema';
 
@@ -15,11 +15,11 @@ export class GenericConnection implements Connection {
     let name: string = (target instanceof Function)
                        ? (<Function>target).name :(typeof target === 'string')
                        ? target : (<T>target).name;
-    this._entities[name] = new GenericEntity((object)?object: target, this._connectionApi);
+    this._entities[name] = new GenericRepository((object)?object: target, this._connectionApi);
   } 
 
   public getRepository<T extends {new(...args:any[]):{}}>(
-    target: (new(...args:any[])=>T)|Function|string): CommonEntity {
+    target: (new(...args:any[])=>T)|Function|string): Repository {
     return (target instanceof Function)
     ? this._entities[(<Function>target).name]
     : (typeof target === 'string')

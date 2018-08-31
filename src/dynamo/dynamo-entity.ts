@@ -1,6 +1,7 @@
-import { CommonEntity } from "../generics";
+import { Repository } from "../generics";
 import * as Joi from 'joi';
 import { is } from "easy-injectionjs";
+import { OrmConfig } from "../models";
 
 export const createDynamoType = (config: string, type: string, dynamo: any) =>
 (type === 'String' && config === 'email') ? Joi.string().email(): (type === 'String') ? Joi.string()
@@ -10,8 +11,14 @@ export const createDynamoType = (config: string, type: string, dynamo: any) =>
 : (type === 'Boolean') ? Joi.boolean()
 : (type === 'Date') ? Joi.date(): dynamo.types.uuid()
 
+export interface DynamoConfig extends OrmConfig {
+  configPath: string,
+  dynamo: any,
+  AWS: any,
+  dynamoConfig?: any
+}
 
-export class DynamoEntity implements CommonEntity {
+export class DynamoRepository implements Repository {
   protected _entity: any;
   protected _target: (new(...args: any[]) => {});
   constructor(entity: any, target: (new(...args: any[]) => {})) {

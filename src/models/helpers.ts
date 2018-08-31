@@ -6,6 +6,8 @@ import { createJSDataField } from '../js-data/js-data-entity';
 import { from } from 'rxjs';
 import { OrmConfig, JsDataConfig, GenericConfig } from './config';
 import { JSDataConnector } from '../js-data';
+import { createDynamoType, DynamoConfig } from '../dynamo/dynamo-entity';
+import { DynamoConnector } from '../dynamo/dynamo-connection';
 
 export interface Field {
   name: string,
@@ -13,7 +15,9 @@ export interface Field {
   params?: string | any | any[]
 }
 
-export const getGlobalOrm = () => <OrmType>is('ORM_TYPE')
+export const getGlobalOrm = () => <OrmType>is('ORM_TYPE');
+
+export const getDynamo = () => <any>is('Dynamo');
 
 export const getGlobalConnector = () => <Promise<Connection>>(<Connector>is('Global_Connector')).connect(is('DB_URL'), is('DB_PARAMS'))
 
@@ -38,6 +42,8 @@ export const registerField = (target: Function,
 export const createFields = (ormType: OrmType, fields: Field[]) => {
   return fields.map(field => (ormType === OrmType.JS_DATA)
                             ? {...field, type: createJSDataField(field.type)}
+                            : (ormType === OrmType.DYNAMODB)
+                            ? {...field, type: createDynamoType(field.name,field.name, getDynamo())}
                             : field);
 }
 
@@ -48,6 +54,8 @@ export const getConnector = (ormType: OrmType, ormConfig: OrmConfig) => {
     (<JsDataConfig>ormConfig).adapterConfig,
     (<JsDataConfig>ormConfig).adapterName,
     (<JsDataConfig>ormConfig).Container)
+ : (ormType === OrmType.DYNAMODB)
+ ? new DynamoConnector(<DynamoConfig>ormConfig)
  : new GenericConnector((<GenericConfig>ormConfig).orm,
     (<GenericConfig>ormConfig).connectionFunction,
     (<GenericConfig>ormConfig).connectionApi,
