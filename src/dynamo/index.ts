@@ -1,2 +1,2 @@
 export * from './dynamo-connection';
-export * from './dynamo-entity';
+export * from './dynamo-Repository';

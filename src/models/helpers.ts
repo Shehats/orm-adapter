@@ -2,11 +2,11 @@ import * as Joi from 'joi';
 import { Easily, is } from 'easy-injectionjs';
 import 'reflect-metadata';
 import { OrmType, Connection, Connector, GenericConnector } from '../generics';
-import { createJSDataField } from '../js-data/js-data-entity';
+import { createJSDataField } from '../js-data/js-data-repository';
 import { from } from 'rxjs';
 import { OrmConfig, JsDataConfig, GenericConfig } from './config';
 import { JSDataConnector } from '../js-data';
-import { createDynamoType, DynamoConfig } from '../dynamo/dynamo-entity';
+import { createDynamoType, DynamoConfig } from '../dynamo/dynamo-Repository';
 import { DynamoConnector } from '../dynamo/dynamo-connection';
 
 export interface Field {

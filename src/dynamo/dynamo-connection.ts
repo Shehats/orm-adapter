@@ -1,5 +1,5 @@
 import { Connection, GenericSchema, Connector } from '../generics/generic-schema';
-import { DynamoRepository, DynamoConfig } from './dynamo-entity';
+import { DynamoRepository, DynamoConfig } from './dynamo-Repository';
 import { Repository } from '../generics';
 import { is, Easily } from 'easy-injectionjs';
 
