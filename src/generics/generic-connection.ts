@@ -1,4 +1,4 @@
-import { GenericRepository, Repository } from './generic-entity';
+import { GenericRepository, Repository } from './generic-repository';
 import { is, Easily } from 'easy-injectionjs';
 import { Connection, Connector } from './generic-schema';
 

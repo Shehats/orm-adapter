@@ -1,4 +1,4 @@
-import { Repository } from './generic-entity';
+import { Repository } from './generic-repository';
 
 export interface GenericSchema {
   name: string,
@@ -30,8 +30,6 @@ export enum OrmType {
   JS_DATA,
   DYNAMODB,
   MONGOOSE,
-  WATER_LINE,
   BOOK_SHELF,
-  LOOP_BACK,
   CUSTOM
 }
