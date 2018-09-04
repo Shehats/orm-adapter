@@ -2,19 +2,19 @@ import { Connection, Connector } from "../generics";
 import { is } from 'easy-injectionjs';
 import { Field } from "../models";
 import { createBookShelfSchema, BookShelfRepository } from "./book-shelf-repository";
+import { BookShelfConfig } from './book-shelf-schema';
 
 export class BookShelfConnection implements Connection {
   private _entities: any;
   private _modelBase: any;
   private static _instance: BookShelfConnection = null;
-  constructor (bookShelf: any, modelBase: any) {
-    this._modelBase = modelBase(bookShelf)
-    bookShelf.plugin(modelBase.pluggable)
+  private constructor (modelBase: any) {
+    this._modelBase = modelBase;
     this._entities = {};
   }
 
-  public static create (bookShelf: any, modelBase: any) {
-    return this._instance || (this._instance = new this(bookShelf, modelBase))
+  public static create (modelBase: any) {
+    return this._instance || (this._instance = new this(modelBase))
   }
   public putRepository<T extends {new(...args:any[]):{}}>(
     target: (new(...args:any[])=>T), object?: Object|any): void {
@@ -30,7 +30,34 @@ export class BookShelfConnection implements Connection {
   }
 }
 
-/* TODO
-export class BookShelfConnector implements Connector {
 
-}*/
+export class BookShelfConnector implements Connector {
+  private _modelBase: any;
+  constructor (config: BookShelfConfig) {
+    this._modelBase = config.modelBase(config.bookShelf)
+    config.bookShelf.plugin(config.modelBase)
+    config.plugins.forEach(plugin => {
+      config.bookShelf.plugin(plugin)
+    })
+  }
+
+  public connect(): Promise<Connection|any> {
+    return Promise.resolve(BookShelfConnection.create(this._modelBase))
+  }
+
+  public get ConnectionFunc() {
+    return this._modelBase;
+  }
+
+  public set ConnectionFunc(connectionFunction: Function|any) {
+    this._modelBase = connectionFunction;
+  }
+
+  public get ConnectionApi() {
+    return this._modelBase;
+  }
+
+  public set ConnectionApi(connectionApi: Function|Object|any) {
+    this._modelBase = connectionApi;
+  }
+}

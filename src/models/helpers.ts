@@ -8,6 +8,7 @@ import { OrmConfig, JsDataConfig, GenericConfig } from './config';
 import { JSDataConnector } from '../js-data';
 import { createDynamoType, DynamoConfig } from '../dynamo/dynamo-Repository';
 import { DynamoConnector } from '../dynamo/dynamo-connection';
+import { BookShelfConnector, BookShelfConfig } from '../book-shelf';
 
 export interface Field {
   name: string,
@@ -56,10 +57,17 @@ export const getConnector = (ormType: OrmType, ormConfig: OrmConfig) => {
     (<JsDataConfig>ormConfig).Container)
  : (ormType === OrmType.DYNAMODB)
  ? new DynamoConnector(<DynamoConfig>ormConfig)
+ : (ormType === OrmType.BOOK_SHELF)
+ ? new BookShelfConnector(<BookShelfConfig>ormConfig)
  : new GenericConnector((<GenericConfig>ormConfig).orm,
     (<GenericConfig>ormConfig).connectionFunction,
     (<GenericConfig>ormConfig).connectionApi,
     (<GenericConfig>ormConfig).connectClass);
+}
+
+export const maybeCreateDynamo = (createDynamo: Function = is('Dynamo_Create')) => {
+  if (createDynamo)
+    createDynamo()
 }
 
 export const createSchema = <T extends {new(...args: any[]):{}}> (connector: Promise<Connection> = getGlobalConnector(),

@@ -2,7 +2,7 @@ import { Connection, Connector, GenericConnection } from '../generics';
 import { AdapterSchema } from './js-data-schema';
 import { is } from 'easy-injectionjs';
 import { setJSDataId, createJSDataSchemaProperties, JsDataRepository } from './js-data-repository';
-import { Repository } from '../generics/generic-entity';
+import { Repository } from '../generics/generic-repository';
 import { Field } from '../models/helpers';
 
 export class JSDataConnection implements Connection {

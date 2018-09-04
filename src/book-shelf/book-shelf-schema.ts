@@ -1,3 +1,11 @@
+import { OrmConfig } from "../models";
+
+export interface BookShelfConfig extends OrmConfig{
+  bookShelf: any, 
+  modelBase: any,
+  plugins?: any[]
+}
+
 export interface BookShelfSchema {
   tableName: string,
   validate: Function|Object|any,
