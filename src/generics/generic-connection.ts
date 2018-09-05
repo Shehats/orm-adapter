@@ -69,9 +69,3 @@ export class GenericConnector implements Connector{
     this._connectionApi = connectionApi;
   }
 }
-
-export const ConnectionFunction = (func: Function|any, connectionApi?: Function|Object|any,orm?: boolean,
-                     connectClass?: (new(...args: any[]) => GenericConnection|(new(...args: any[]) =>{}))) => {
-  let connector = <Connection>is('DB_Connection') || new GenericConnector(orm,func, connectionApi, connectClass);
-  Easily('DB_Connection', connector);
-}

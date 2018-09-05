@@ -18,10 +18,9 @@ export class BookShelfConnection implements Connection {
   }
   public putRepository<T extends {new(...args:any[]):{}}>(
     target: (new(...args:any[])=>T), object?: Object|any): void {
-      let id = <number|string>is(target.name+'_ID');
       let fields = <Field[]>is(target.name+'_Fields');
       let enttity = this._modelBase.extend(createBookShelfSchema(target, fields))
-      this._entities[target.name] = new BookShelfRepository(enttity)
+      this._entities[target.name] = new BookShelfRepository(enttity, target)
   }
 
   public getRepository<T extends {new(...args:any[]):{}}>(

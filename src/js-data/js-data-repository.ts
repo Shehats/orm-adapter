@@ -2,6 +2,7 @@ import { Repository } from '../generics';
 import { JSDataSchema, JSDataSchemaField } from './js-data-schema';
 import { is, Easily } from 'easy-injectionjs';
 import { Field } from '../models/helpers';
+import { maybeHookCreate, maybeHookUpdate, maybeHookDelete } from '../models/operators';
 
 export const createJSDataField = (type: string, indexed?: boolean): JSDataSchemaField => {
   return <JSDataSchemaField>((type === 'String')
@@ -44,19 +45,19 @@ export class JsDataRepository implements Repository {
     return this._store.findAll(this._entity.name, params);
   }
   public save <T extends {new(...args:any[]):{}}> (target: T|any){
-    return this._store.create(this._entity.name, target);
+    return maybeHookCreate(this._entity.name, () => this._store.create(this._entity.name, target));
   }
   public update <T extends {new(...args:any[]):{}}> (target: T|any){
-    return this.updateById(target[getJSDataId(target)], target);
+    return maybeHookUpdate(this._entity.name, () => this.updateById(target[getJSDataId(target)], target));
   }
   public updateById <T extends {new(...args:any[]):{}}> (id: number|string|any, 
     target: T|any){
-    return this._store.update(this._entity.name, id, target);
+    return maybeHookUpdate(this._entity.name, () => this._store.update(this._entity.name, id, target));
   }
   public delete <T extends {new(...args:any[]):{}}> (target: T|any){
-    return this.deleteById(target[getJSDataId(target)]);
+    return maybeHookDelete(this._entity.name, () => this.deleteById(target[getJSDataId(target)]));
   }
   public deleteById (id: number|string|any) {
-    return this._store.destroy(this._entity.name, id);
+    return maybeHookDelete(this._entity.name, () => this._store.destroy(this._entity.name, id));
   }
 }

@@ -19,8 +19,14 @@
   "dependencies": {
     "easy-injectionjs": "^0.1.42",
     "joi": "^13.6.0",
+    "js-data": "^3.0.3",
     "properties-reader": "0.0.16",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.2"
+  },
+  "devDependencies": {
+    "@types/joi": "^13.4.4",
+    "js-data-mongodb": "^1.0.2",
+    "knex": "^0.15.2"
   }
 }

@@ -2,6 +2,7 @@ import { Repository } from "../generics";
 import * as Joi from 'joi';
 import { is } from "easy-injectionjs";
 import { OrmConfig } from "../models";
+import { maybeHookCreate, maybeHookUpdate, maybeHookDelete } from '../models/operators';
 
 export const createDynamoType = (config: string, type: string, dynamo: any) =>
 (type === 'String' && config === 'email') ? Joi.string().email(): (type === 'String') ? Joi.string()
@@ -21,6 +22,7 @@ export interface DynamoConfig extends OrmConfig {
 export class DynamoRepository implements Repository {
   protected _entity: any;
   protected _target: (new(...args: any[]) => {});
+  
   constructor(entity: any, target: (new(...args: any[]) => {})) {
     this._entity = entity;
     this._target = target;
@@ -35,19 +37,19 @@ export class DynamoRepository implements Repository {
     return this._entity.query(params).exec();
   }
   public save <T extends {new(...args:any[]):{}}> (target: T|any){
-    return this._entity.create(target);
+    return maybeHookCreate(this._target.name, () => this._entity.create(target));
   }
   public update <T extends {new(...args:any[]):{}}> (target: T|any){
-    return this._entity.update(target);
+    return maybeHookUpdate(this._target.name, () => this._entity.update(target));
   }
   public updateById <T extends {new(...args:any[]):{}}> (id: number|string|any, 
     target: T|any){
-    return this.update(target);
+    return maybeHookUpdate(this._target.name, () => this.update(target));
   }
   public delete <T extends {new(...args:any[]):{}}> (target: T|any){
-    return this.deleteById(target[<number>is(`${this._target.name}_ID`)]);
+    return maybeHookDelete(this._target.name, () => this.deleteById(target[<number>is(`${this._target.name}_ID`)]));
   }
   public deleteById (id: number|string|any) {
-    return this._entity.delete(id);
+    return maybeHookDelete(this._target.name,() => this._entity.delete(id));
   }
 }

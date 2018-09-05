@@ -4,12 +4,6 @@ import { OrmType, Connector } from "../generics";
 import { OrmConfig } from './config';
 import { getConnector, createSchema } from "./helpers";
 
-export const registerOrmProperties = (ormType: OrmType, ormConfig: OrmConfig) => {
-  Easily('ORM_TYPE', ormType);
-  Easily('ORM_CONFIG', ormConfig);
-  Easily('Global_Connector', getConnector(ormType, ormConfig))
-}
-
 /*
 TODO
 read properties from properties file.

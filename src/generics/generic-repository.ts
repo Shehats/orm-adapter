@@ -1,3 +1,5 @@
+import { maybeHookCreate, maybeHookUpdate, maybeHookDelete } from '../models/operators';
+
 export interface Repository {
   findAll <T extends {new(...args:any[]):{}}> ():T[]|any[]|any;
   findById <T extends {new(...args:any[]):{}}> (id: number|string|any): T|any;
@@ -32,13 +34,14 @@ export class GenericRepository {
   }
 
   public save <T extends {new(...args:any[]):{}}> (target: T|any) {
-    return this._connectionApi.save(target);
+    return maybeHookCreate(this._entity['name']||this._entity['constructor']['name'], () => this._connectionApi.save(target));
   }
 
   public update <T extends {new(...args:any[]):{}}> (target: T|any) {
-    return (this._connectionApi.update)
+    return maybeHookUpdate(this._entity['name']||this._entity['constructor']['name'], 
+    () => (this._connectionApi.update)
     ? this._connectionApi.update(target)
-    : this.save(target);
+    : this.save(target));
   }
 
   public updateById <T extends {new(...args:any[]):{}}> (id: number|string|any, 
@@ -46,17 +49,17 @@ export class GenericRepository {
     if (this._connectionApi.updateById)
       return this._connectionApi.updateById(id, target);
     let data = this.findById(id)
-    return this.update(data);
+    return maybeHookUpdate(this._entity['name']||this._entity['constructor']['name'], () => this.update(data));
   }
 
   public delete <T extends {new(...args:any[]):{}}> (target: T|any) {
-    return this._connectionApi.delete(target);
+    return maybeHookDelete(this._entity['name']||this._entity['constructor']['name'], () => this._connectionApi.delete(target));
   }
 
   public deleteById (id: number|string|any) {
     if (this._connectionApi.deleteById)
       return this._connectionApi.deleteById(id)
     let data = this.findById(id)
-    return this.delete(data);
+    return maybeHookDelete(this._entity['name']||this._entity['constructor']['name'], () => this.delete(data));
   }
 }

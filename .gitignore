@@ -3,3 +3,4 @@ dist
 *.lock
 *-lock.json
 test.ts
+examples

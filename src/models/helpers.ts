@@ -9,6 +9,7 @@ import { JSDataConnector } from '../js-data';
 import { createDynamoType, DynamoConfig } from '../dynamo/dynamo-Repository';
 import { DynamoConnector } from '../dynamo/dynamo-connection';
 import { BookShelfConnector, BookShelfConfig } from '../book-shelf';
+import { MongooseConnector, MongooseConfig } from '../mongoose';
 
 export interface Field {
   name: string,
@@ -59,24 +60,20 @@ export const getConnector = (ormType: OrmType, ormConfig: OrmConfig) => {
  ? new DynamoConnector(<DynamoConfig>ormConfig)
  : (ormType === OrmType.BOOK_SHELF)
  ? new BookShelfConnector(<BookShelfConfig>ormConfig)
+ : (ormType === OrmType.MONGOOSE)
+ ? new MongooseConnector(<MongooseConfig>ormConfig)
  : new GenericConnector((<GenericConfig>ormConfig).orm,
     (<GenericConfig>ormConfig).connectionFunction,
     (<GenericConfig>ormConfig).connectionApi,
     (<GenericConfig>ormConfig).connectClass);
 }
 
-export const maybeCreateDynamo = (createDynamo: Function = is('Dynamo_Create')) => {
-  if (createDynamo)
-    createDynamo()
-}
-
-export const createSchema = <T extends {new(...args: any[]):{}}> (connector: Promise<Connection> = getGlobalConnector(),
+export const createSchema = <T extends {new(...args: any[]):{}}> (connection: Promise<Connection> = getGlobalConnector(),
                             entity: T) => {
-  from(connector)
+  from(connection)
   .subscribe(
     (conn: Connection) => {
       conn.putRepository(entity)
-    },
-    err => console.error(err)
+    }
   )
 }

@@ -30,18 +30,60 @@ export function ignore (target: Object, key: string) {
   Easily('Ignore_'+target.constructor.name, key);
 }
 
-export const hasMany = (entity: string) =>
+export const hasMany = (entity: string|(new(...args: any[]) => {})) =>
 function(target: Object, key: string) {
   Easily(`${target.constructor.name}_Many`, <HasMany>{
-    foreignKey: entity,
+    foreignKey: (typeof entity === "string")? entity: entity.name,
     localField: key
   })
 }
 
-export const belongsTo = (entity: string) =>
+export const belongsTo = (entity: string|(new(...args: any[]) => {})) =>
 function(target: Object, key: string) {
   Easily(`${target.constructor.name}_Belongs`, <BelongsTo>{
-    foreignKey: entity,
+    foreignKey:(typeof entity === "string")? entity: entity.name,
     localField: key
   })
+}
+
+export const beforeCreate = () => 
+function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  let stack = <Function[]>is(`${target.constructor.name}_Before_Create`) || []
+  stack.push(target[propertyKey])
+  Easily(`${target.constructor.name}_Before_Create`, stack)
+}
+
+export const afterCreate = () => 
+function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  let stack = <Function[]>is(`${target.constructor.name}_After_Create`) || []
+  stack.push(target[propertyKey])
+  Easily(`${target.constructor.name}_After_Create`, stack)
+}
+
+export const beforeUpdate = () => 
+function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  let stack = <Function[]>is(`${target.constructor.name}_Before_Update`) || []
+  stack.push(target[propertyKey])
+  Easily(`${target.constructor.name}_Before_Update`, stack)
+}
+
+export const afterUpdate = () => 
+function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  let stack = <Function[]>is(`${target.constructor.name}_After_Update`) || []
+  stack.push(target[propertyKey])
+  Easily(`${target.constructor.name}_After_Update`, stack)
+}
+
+export const beforeDelete = () => 
+function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  let stack = <Function[]>is(`${target.constructor.name}_Before_Delete`) || []
+  stack.push(target[propertyKey])
+  Easily(`${target.constructor.name}_Before_Delete`, stack)
+}
+
+export const afterDelete = () => 
+function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  let stack = <Function[]>is(`${target.constructor.name}_After_Delete`) || []
+  stack.push(target[propertyKey])
+  Easily(`${target.constructor.name}_After_Delete`, stack)
 }
