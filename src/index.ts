@@ -9,8 +9,20 @@ export { Entity, column,
          beforeDelete,
          afterDelete,
          ormRunner,
-         readProperties,
+         OrmConfig,
          registerField,
          createAndRun,
          registerConnectionFunction,
-         registerOrmProperties } from './models/index';
+         registerOrmProperties } from './models';
+
+export { OrmType } from './generics';
+
+export * from './book-shelf/book-shelf-schema';
+
+export { DynamoConfig } from './dynamo/dynamo-Repository';
+
+export * from './js-data';
+
+export * from './generics/generic-schema'
+
+export * from './mongoose/mongoose-schema';

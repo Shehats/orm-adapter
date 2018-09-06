@@ -3,7 +3,6 @@ import { Easily, is } from 'easy-injectionjs';
 import 'reflect-metadata';
 import { OrmType, Connection, Connector, GenericConnector } from '../generics';
 import { createJSDataField } from '../js-data/js-data-repository';
-import { from } from 'rxjs';
 import { OrmConfig, JsDataConfig, GenericConfig } from './config';
 import { JSDataConnector } from '../js-data';
 import { createDynamoType, DynamoConfig } from '../dynamo/dynamo-Repository';
@@ -70,10 +69,10 @@ export const getConnector = (ormType: OrmType, ormConfig: OrmConfig) => {
 
 export const createSchema = <T extends {new(...args: any[]):{}}> (connection: Promise<Connection> = getGlobalConnector(),
                             entity: T) => {
-  from(connection)
-  .subscribe(
-    (conn: Connection) => {
+  connection
+  .then(
+    (conn:Connection ) => {
       conn.putRepository(entity)
-    }
-  )
+      return conn;
+    }).catch(err => console.error(err))
 }

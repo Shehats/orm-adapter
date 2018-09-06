@@ -4,12 +4,6 @@ import { OrmType, Connector } from "../generics";
 import { OrmConfig } from './config';
 import { getConnector, createSchema } from "./helpers";
 
-/*
-TODO
-read properties from properties file.
-*/
-export const readProperties = () => {}
-
 export const ormRunner = (ormType: OrmType, ormConfig: OrmConfig, target: any,
                           url?: string, params?: any, ...rest: any[]) => {
   let _connector: Connector = <Connector>is('Global_Connector') ||  getConnector(ormType, ormConfig);

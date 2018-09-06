@@ -1,19 +1,5 @@
 import { OrmConfig } from "../models";
 
-export interface BookShelfConfig extends OrmConfig{
-  bookShelf: any, 
-  modelBase: any,
-  plugins?: any[]
-}
-
-export interface BookShelfSchema {
-  tableName: string,
-  validate: Function|Object|any,
-  initialize?: Function,
-  hasTimestamps?: boolean,
-  parse?: boolean
-}
-
 export interface knexConnectionSchema {
   host: string,
   user: string,
@@ -26,4 +12,20 @@ export interface KnexSchema {
   connection: knexConnectionSchema,
   pool?: Function|any,
   migrations?: Function|any
+}
+
+export interface BookShelfConfig extends OrmConfig{
+  bookShelf: any,
+  kneex: Function|any,
+  modelBase: any,
+  kneexSchema: KnexSchema,
+  plugins?: any[]
+}
+
+export interface BookShelfSchema {
+  tableName: string,
+  validate: Function|Object|any,
+  initialize?: Function,
+  hasTimestamps?: boolean,
+  parse?: boolean
 }

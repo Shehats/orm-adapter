@@ -33,6 +33,7 @@ export class BookShelfConnection implements Connection {
 export class BookShelfConnector implements Connector {
   private _modelBase: any;
   constructor (config: BookShelfConfig) {
+    config.bookShelf = config.bookShelf(config.kneex(config.kneexSchema))
     this._modelBase = config.modelBase(config.bookShelf)
     config.bookShelf.plugin(config.modelBase)
     config.plugins.forEach(plugin => {
