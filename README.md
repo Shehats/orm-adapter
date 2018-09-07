@@ -22,9 +22,9 @@ Currently supports:
 
 ###### 4- @key: Creates a column as well as identifies as secondary id for quiries and updates.
 
-###### 5- @hasMany: creates a one to many relationship.
+###### 5- @hasMany: creates a one to many relationship. Will be fully functional next release.
 
-###### 6- @belongsTo: creates a one to one relationship.
+###### 6- @belongsTo: creates a one to one relationship. Will be fully functional next release.
 
 ###### 7- @beforeCreate: runs function before saving model to database.
 
