@@ -179,5 +179,41 @@ class User {
   @belongsTo(Friend /*or 'Friend'*/)
   bestFriend: Friend;
 }
+```
+### API usage:
 
+```javascript
+import { getGlobalConnector } from 'orm-adapter';
+
+// Getting all users.
+getGlobalConnector()
+.then(conn => conn.getRepository(User).findAll())
+
+// Getting a user by id = 11.
+getGlobalConnector()
+.then(conn => conn.getRepository(User).findById(11))
+
+// Getting a user by a param: firstName = 'sal'.
+getGlobalConnector()
+.then(conn => conn.getRepository(User).findByKey({firstName: 'sal'}))
+
+// Save a user.
+getGlobalConnector()
+.then(conn => conn.getRepository(User).save(new User(/* pass your params*/))
+
+// Update a user.
+getGlobalConnector()
+.then(conn => conn.getRepository(User).update(someUser))
+
+// Update a user by id.
+getGlobalConnector()
+.then(conn => conn.getRepository(User).updateById(11,someUser))
+
+// Delete a user.
+getGlobalConnector()
+.then(conn => conn.getRepository(User).delete(someUser))
+
+// Delete a user by id.
+getGlobalConnector()
+.then(conn => conn.getRepository(User).deleteById(11))
 ```
