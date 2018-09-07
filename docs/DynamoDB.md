@@ -75,7 +75,7 @@ const config: DynamoConfig = {
   dynamoConfig: {}
 }
 
-@Entity(OrmType.JS_DATA,config)
+@Entity(OrmType.DYNAMODB,config)
 class Nerd {
   @id()
   realName: string;
