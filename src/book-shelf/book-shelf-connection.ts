@@ -1,5 +1,5 @@
 import { Connection, Connector } from "../generics";
-import { is } from 'easy-injectionjs';
+import { is, Easily } from 'easy-injectionjs';
 import { Field } from "../models";
 import { createBookShelfSchema, BookShelfRepository } from "./book-shelf-repository";
 import { BookShelfConfig } from './book-shelf-schema';
@@ -39,6 +39,7 @@ export class BookShelfConnector implements Connector {
     config.plugins.forEach(plugin => {
       config.bookShelf.plugin(plugin)
     })
+    Easily('BookShelf_Connector', this);
   }
 
   public connect(): Promise<Connection|any> {

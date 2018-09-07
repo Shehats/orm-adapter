@@ -38,6 +38,7 @@ export class DynamoConnector implements Connector {
     this._dynamo = config.dynamo;
     this._AWS = config.AWS;
     this._config = config;
+    Easily('Dynamo_Connector', this);
   }
   
   public connect(url?: string, params?: any, ...rest: any[]): Promise<Connection|any> {

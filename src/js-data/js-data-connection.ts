@@ -1,6 +1,6 @@
 import { Connection, Connector, GenericConnection } from '../generics';
 import { AdapterSchema } from './js-data-schema';
-import { is } from 'easy-injectionjs';
+import { is, Easily } from 'easy-injectionjs';
 import { setJSDataId, createJSDataSchemaProperties, JsDataRepository } from './js-data-repository';
 import { Repository } from '../generics/generic-repository';
 import { Field } from '../models/helpers';
@@ -59,6 +59,7 @@ export class JSDataConnector implements Connector {
       this._store = new Container();
       this._store.registerAdapter(adapterName, this._adapter, { 'default': true });
       this._schema = Schema;
+      Easily('JSData_Connector', this);
   }
   
   public connect(url?: string, params?: any, ...rest: any[]): Promise<Connection|any> {

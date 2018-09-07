@@ -1,7 +1,11 @@
-import { Repository, Connection, GenericConnector, GenericConnection, OrmType } from '../generics';
+import { Repository, Connection, GenericConnector, GenericConnection, OrmType, Connector } from '../generics';
 import { is, Easily } from 'easy-injectionjs';
 import { getConnector } from './helpers';
 import { OrmConfig } from './config';
+import { JSDataConnection, JSDataConnector } from '../js-data/js-data-connection';
+import { BookShelfConnection, BookShelfConnector } from '../book-shelf/book-shelf-connection';
+import { DynamoConnection, DynamoConnector } from '../dynamo';
+import { MongooseConnection, MongooseConnector } from '../mongoose';
 
 const maybeCreateDynamo = (createDynamo: Function = is('Dynamo_Create')) => {
   if (createDynamo)
@@ -11,7 +15,8 @@ const maybeCreateDynamo = (createDynamo: Function = is('Dynamo_Create')) => {
 export const registerConnectionFunction = (func: Function|any, connectionApi?: Function|Object|any,orm?: boolean,
   connectClass?: (new(...args: any[]) => GenericConnection|(new(...args: any[]) =>{}))) => {
   let connector = <Connection>is('DB_Connection') || new GenericConnector(orm,func, connectionApi, connectClass);
-  Easily('DB_Connection', connector);
+  Easily('ORM_TYPE', OrmType.CUSTOM);
+  Easily('Global_Connector', connector);
 }
 
 export const registerOrmProperties = (ormType: OrmType, ormConfig: OrmConfig) => {
@@ -24,6 +29,26 @@ export const getRepository = <T extends {new(...args: any[]):{}}> (target: T): R
 
 export const createAndRun = () => {
   maybeCreateDynamo()
+}
+
+export const getJSDataConnector = () => {
+  return <Promise<JSDataConnection>>(<JSDataConnector>is('JSData_Connector')).connect()
+}
+
+export const getBookShelfConnector = () => {
+  return <Promise<BookShelfConnection>>(<BookShelfConnector>is('BookShelf_Connector')).connect()
+}
+
+export const getDynamoConnector = () => {
+  return <Promise<DynamoConnection>>(<DynamoConnector>is('Dynamo_Connector')).connect()
+}
+
+export const getMongooseConnector = () => {
+  return <Promise<MongooseConnection>>(<MongooseConnector>is('Mongoose_Connector')).connect()
+}
+
+export const getCustomConnector = (url?: string, params?: any, ...rest: any[]) => {
+  return <Promise<Connection>>(<Connector>is('Custom_Connector')).connect(url, params, rest)
 }
 
 export const maybeHookCreate = (name: string, func: Function) => {

@@ -10,19 +10,28 @@ export { Entity, column,
          afterDelete,
          ormRunner,
          OrmConfig,
-         registerField,
          createAndRun,
          registerConnectionFunction,
-         registerOrmProperties } from './models';
+         registerOrmProperties,
+         JsDataConfig,
+         GenericConfig,
+         getJSDataConnector,
+         getBookShelfConnector,
+         getDynamoConnector,
+         getMongooseConnector,
+         getCustomConnector,
+         getGlobalConnector } from './models';
 
-export { OrmType } from './generics';
+export { OrmType, Connection, Connector } from './generics';
 
 export * from './book-shelf/book-shelf-schema';
 
 export { DynamoConfig } from './dynamo/dynamo-Repository';
 
-export * from './js-data';
+export * from './js-data/js-data-schema';
 
 export * from './generics/generic-schema'
+
+export * from './generics/generic-connection';
 
 export * from './mongoose/mongoose-schema';

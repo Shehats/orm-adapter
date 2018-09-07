@@ -40,6 +40,7 @@ export class MongooseConnector implements Connector {
       this._mongoose.connect(config.url);
       Easily('Mongoose_Connect', true)
     }
+    Easily('Mongoose_Connector', this);
   }
   
   public connect(): Promise<Connection|any> {

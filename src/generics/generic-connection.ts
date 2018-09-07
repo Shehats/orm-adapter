@@ -41,6 +41,7 @@ export class GenericConnector implements Connector{
     this._connectionFunc = connectionFunction;
     this._connectionApi = connectionApi;
     this._connectionClass = (connectClass)? connectClass: GenericConnection;
+    Easily('Custom_Connector', this);
   }
 
   public connect(url: string, params: any, ...rest: any[]): Promise<Connection|any> {
